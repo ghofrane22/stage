@@ -36,12 +36,7 @@ import ContactHelpdesk from "./components/ContactHelpdesk";
 import AgentDashboard from "./components/AgentDashboard";
 import Login from "./components/Login";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import {
-  
-  
-
-  NavLink,
-} from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("token"));
@@ -118,7 +113,6 @@ function App() {
               <Route path="/ticket-followup" element={<TicketFollowUp />} />
               <Route path="/contact" element={<ContactHelpdesk />} />
               <Route path="/agent-dashboard" element={<AgentDashboard />} />
-              <Route path="/login" element={<Login />} />
             </Routes>
           </main>
         </>
