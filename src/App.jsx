@@ -28,16 +28,33 @@
 
 // export default App;
 
-
-import React from "react";
+import React, { useState } from "react";
 import Dashboard from "./components/Dashboard";
 import TicketFollowUp from "./components/TicketFollowUp";
 import HelpdeskChat from "./components/HelpdeskChat";
 import ContactHelpdesk from "./components/ContactHelpdesk";
 import AgentDashboard from "./components/AgentDashboard";
-import { BrowserRouter as Router, Routes, Route, NavLink } from "react-router-dom";
+import Login from "./components/Login";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  
+  
+
+  NavLink,
+} from "react-router-dom";
 
 function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("token"));
+
+  const handleLogin = () => {
+    setIsLoggedIn(true);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setIsLoggedIn(false);
+  };
+
   const navLinkStyle = {
     padding: "0.6rem 1rem",
     borderRadius: "8px",
@@ -63,39 +80,51 @@ function App() {
 
   return (
     <Router>
-      <header style={navBarStyle}>
-        <NavLink to="/" style={navLinkStyle} end={true} activeStyle={activeStyle}>
-          Dashboard
-        </NavLink>
-        <NavLink
-          to="/ticket-followup"
-          style={navLinkStyle}
-          activeStyle={activeStyle}
-        >
-          Suivi ticket
-        </NavLink>
-        <NavLink to="/contact" style={navLinkStyle} activeStyle={activeStyle}>
-          Contact
-        </NavLink>
-        <NavLink
-          to="/agent-dashboard"
-          style={navLinkStyle}
-          activeStyle={activeStyle}
-        >
-          Dashboard Agent
-        </NavLink>
-      </header>
+      {isLoggedIn ? (
+        <>
+          <header style={navBarStyle}>
+            <NavLink to="/" style={navLinkStyle} end activeStyle={activeStyle}>
+              Dashboard
+            </NavLink>
+            <NavLink
+              to="/ticket-followup"
+              style={navLinkStyle}
+              activeStyle={activeStyle}
+            >
+              Suivi ticket
+            </NavLink>
+            <NavLink
+              to="/contact"
+              style={navLinkStyle}
+              activeStyle={activeStyle}
+            >
+              Contact
+            </NavLink>
+            <NavLink
+              to="/agent-dashboard"
+              style={navLinkStyle}
+              activeStyle={activeStyle}
+            >
+              Dashboard Agent
+            </NavLink>
+            <button onClick={handleLogout}>Déconnexion</button>
+          </header>
 
-      <HelpdeskChat /> {/* Chat accessible everywhere */}
+          <HelpdeskChat />
 
-      <main style={{ padding: "2rem" }}>
-        <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/ticket-followup" element={<TicketFollowUp />} />
-          <Route path="/contact" element={<ContactHelpdesk />} />
-          <Route path="/agent-dashboard" element={<AgentDashboard />} />
-        </Routes>
-      </main>
+          <main style={{ padding: "2rem" }}>
+            <Routes>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/ticket-followup" element={<TicketFollowUp />} />
+              <Route path="/contact" element={<ContactHelpdesk />} />
+              <Route path="/agent-dashboard" element={<AgentDashboard />} />
+              <Route path="/login" element={<Login />} />
+            </Routes>
+          </main>
+        </>
+      ) : (
+        <Login onLogin={handleLogin} />
+      )}
     </Router>
   );
 }
