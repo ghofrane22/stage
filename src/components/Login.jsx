@@ -7,15 +7,26 @@ export default function Login({ onLogin }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault(); // prevent page reload
-
-    if (username && password) {
-      localStorage.setItem("token", "fakeToken123"); // store a fake token
-      onLogin(); // update App state
-      navigate("/"); // redirect to Dashboard
-    } else {
-      alert("Veuillez entrer vos identifiants.");
+    if (!username || !password) return alert("Veuillez entrer vos identifiants.");
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: username, password })
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        return alert(err.message || 'Échec de la connexion');
+      }
+      const data = await res.json();
+      localStorage.setItem('token', data.token);
+      onLogin();
+      navigate('/');
+    } catch (err) {
+      console.error(err);
+      alert('Erreur réseau lors de la connexion');
     }
   };
 
