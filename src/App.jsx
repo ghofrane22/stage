@@ -37,6 +37,16 @@ import AgentDashboard from "./components/AgentDashboard";
 import Login from "./components/Login";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { NavLink } from "react-router-dom";
+import AdminPanel from './components/AdminPanel';
+
+const parseToken = (token) => {
+  try {
+    const parts = token.split('.');
+    if (parts.length !== 3) return {};
+    const payload = JSON.parse(atob(parts[1]));
+    return payload;
+  } catch (e) { return {}; }
+}
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("token"));
@@ -73,6 +83,10 @@ function App() {
     flexWrap: "wrap",
   };
 
+  const token = localStorage.getItem('token');
+  const payload = token ? parseToken(token) : {};
+  const isAdmin = !!payload.isAdmin;
+
   return (
     <Router>
       {isLoggedIn ? (
@@ -102,6 +116,9 @@ function App() {
             >
               Dashboard Agent
             </NavLink>
+            {isAdmin && (
+              <NavLink to="/admin" style={navLinkStyle} activeStyle={activeStyle}>Admin</NavLink>
+            )}
             <button onClick={handleLogout}>Déconnexion</button>
           </header>
 
@@ -113,6 +130,9 @@ function App() {
               <Route path="/ticket-followup" element={<TicketFollowUp />} />
               <Route path="/contact" element={<ContactHelpdesk />} />
               <Route path="/agent-dashboard" element={<AgentDashboard />} />
+              {isAdmin && (
+                <Route path="/admin" element={<AdminPanel />} />
+              )}
             </Routes>
           </main>
         </>
