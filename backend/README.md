@@ -21,6 +21,9 @@ Sequelize/MySQL:
 - The project will attempt to connect to MySQL using variables from `.env`.
 - Defaults are set for XAMPP (root user, no password) and a database named `stage_db`.
 - Create the database manually in XAMPP (or change DB_NAME) before starting.
+ - On startup the app runs `migrations/init-db.js` which will create the database if missing, sync models, and insert default accounts.
+ - Default admin created: email `admin@gmail.com`, password `admin123`.
+ - Default user created: email `agent@example.com`, password `password123`.
 
 Add default admin via SQL (run in MySQL / phpMyAdmin):
 

@@ -17,11 +17,12 @@ app.use('/api/users', usersRoutes);
 
 const PORT = process.env.PORT || 4000;
 
+const runMigrations = require('./migrations/init-db');
+
 const start = async () => {
   try {
-    await sequelize.authenticate();
-    console.log('Connected to MySQL');
-    await sequelize.sync();
+    await runMigrations();
+    console.log('DB initialized');
     app.listen(PORT, () => {
       console.log(`Server listening on port ${PORT}`);
     });
