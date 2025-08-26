@@ -35,6 +35,7 @@ import HelpdeskChat from "./components/HelpdeskChat";
 import ContactHelpdesk from "./components/ContactHelpdesk";
 import AgentDashboard from "./components/AgentDashboard";
 import Login from "./components/Login";
+import Register from './components/Register';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { NavLink } from "react-router-dom";
 import AdminPanel from './components/AdminPanel';
@@ -43,13 +44,15 @@ const parseToken = (token) => {
   try {
     const parts = token.split('.');
     if (parts.length !== 3) return {};
-    const payload = JSON.parse(atob(parts[1]));
-    return payload;
+    const b64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+    const json = decodeURIComponent(atob(b64).split('').map(c => '%'+('00'+c.charCodeAt(0).toString(16)).slice(-2)).join(''));
+    return JSON.parse(json);
   } catch (e) { return {}; }
 }
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("token"));
+  const [showRegister, setShowRegister] = useState(false);
 
   const handleLogin = () => {
     setIsLoggedIn(true);
@@ -137,7 +140,17 @@ function App() {
           </main>
         </>
       ) : (
-        <Login onLogin={handleLogin} />
+        <div style={{ padding: 24 }}>
+          <div style={{ marginBottom: 12 }}>
+            <button onClick={() => setShowRegister(false)} disabled={!showRegister}>Login</button>
+            <button onClick={() => setShowRegister(true)} disabled={showRegister} style={{ marginLeft: 8 }}>Register</button>
+          </div>
+          {showRegister ? (
+            <Register onLogin={handleLogin} />
+          ) : (
+            <Login onLogin={handleLogin} />
+          )}
+        </div>
       )}
     </Router>
   );

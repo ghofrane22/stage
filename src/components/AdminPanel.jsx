@@ -9,6 +9,7 @@ export default function AdminPanel() {
   const createTechnicien = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem('token');
+  if (!token) return alert('Vous devez être connecté en tant qu\'admin.');
     try {
       const res = await fetch('/api/technicien', {
         method: 'POST',
@@ -18,7 +19,10 @@ export default function AdminPanel() {
         },
         body: JSON.stringify({ email, name, password, isAdmin })
       });
-      if (!res.ok) return alert('Erreur lors de la création');
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        return alert(body.message || 'Erreur lors de la création');
+      }
       alert('Technicien créé');
       setEmail(''); setName(''); setPassword(''); setIsAdmin(false);
     } catch (err) {
