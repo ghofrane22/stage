@@ -9,7 +9,7 @@ module.exports = async (req, res, next) => {
   if (!token) return res.status(401).json({ message: 'No token' });
   try {
     const payload = jwt.verify(token, JWT_SECRET);
-    const tech = await Technicien.findByPk(payload.id);
+  const tech = await Technicien.findById(payload.id);
     if (!tech || !tech.isAdmin) return res.status(403).json({ message: 'Admin only' });
     req.technicien = tech;
     next();

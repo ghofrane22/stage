@@ -1,5 +1,4 @@
 const bcrypt = require('bcryptjs');
-const sequelize = require('../config/database');
 const Technicien = require('../models/Technicien');
 
 exports.createTechnicien = async ({ email, name, password, isAdmin = false }) => {
@@ -7,7 +6,7 @@ exports.createTechnicien = async ({ email, name, password, isAdmin = false }) =>
   return await Technicien.create({ email, name, password: hashed, isAdmin });
 };
 
-exports.findByEmail = async (email) => await Technicien.findOne({ where: { email } });
-exports.getAll = async () => await Technicien.findAll();
+exports.findByEmail = async (email) => await Technicien.findOne({ email });
+exports.getAll = async () => await Technicien.find();
 
 // Note: default admin creation is handled by migrations/init-db.js at startup

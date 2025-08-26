@@ -1,11 +1,9 @@
-const bcrypt = require('bcryptjs');
-const sequelize = require('../config/database');
 const User = require('../models/User');
 
 exports.findByEmail = async (email) => {
-  return await User.findOne({ where: { email } });
+  return await User.findOne({ email });
 };
 
-exports.getAll = async () => await User.findAll();
+exports.getAll = async () => await User.find();
 
 // Note: default user creation handled by migrations/init-db.js

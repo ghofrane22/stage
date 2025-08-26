@@ -24,23 +24,6 @@ Sequelize/MySQL:
  - On startup the app runs `migrations/init-db.js` which will create the database if missing, sync models, and insert default accounts.
  - Default admin created: email `admin@gmail.com`, password `admin123`.
  - Default user created: email `agent@example.com`, password `password123`.
+ - The backend now uses MongoDB (Mongoose). Defaults in `.env.example` target a local MongoDB instance at `mongodb://127.0.0.1:27017` with database `stage_db` and no auth.
 
-Add default admin via SQL (run in MySQL / phpMyAdmin):
-
-1) Ensure `stage_db` exists.
-2) Run:
-
-	 CREATE TABLE IF NOT EXISTS `Techniciens` (
-		 `id` int NOT NULL AUTO_INCREMENT,
-		 `email` varchar(255) NOT NULL UNIQUE,
-		 `name` varchar(255) NOT NULL,
-		 `password` varchar(255) NOT NULL,
-		 `isAdmin` tinyint(1) NOT NULL DEFAULT 0,
-		 `createdAt` datetime DEFAULT CURRENT_TIMESTAMP,
-		 `updatedAt` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-		 PRIMARY KEY (`id`)
-	 );
-
-	 INSERT INTO Techniciens (email, name, password, isAdmin) VALUES ('admin@example.com','Admin','$2a$10$PLACEHOLDER_HASH','1');
-
-Replace PLACEHOLDER_HASH with a bcrypt hash of the desired password (e.g., use bcrypt online tool or let the server create default admin on first run).
+The backend uses MongoDB (Mongoose). The migration script `migrations/init-db.js` will create default admin and user documents on first run.

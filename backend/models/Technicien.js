@@ -1,15 +1,10 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/database');
+const { Schema, model } = require('mongoose');
 
-const Technicien = sequelize.define('Technicien', {
-  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  email: { type: DataTypes.STRING, allowNull: false, unique: true },
-  name: { type: DataTypes.STRING, allowNull: false },
-  password: { type: DataTypes.STRING, allowNull: false },
-  isAdmin: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false }
-}, {
-  tableName: 'Techniciens',
-  timestamps: true
-});
+const technicienSchema = new Schema({
+  email: { type: String, required: true, unique: true },
+  name: { type: String, required: true },
+  password: { type: String, required: true },
+  isAdmin: { type: Boolean, default: false }
+}, { timestamps: true });
 
-module.exports = Technicien;
+module.exports = model('Technicien', technicienSchema);
