@@ -8,6 +8,7 @@ export default function Login({ onLogin }) {
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("client"); // rôle par défaut
 
+<<<<<<< HEAD:frontend/components/Login.jsx
   const handleSubmit = (e) => {
     e.preventDefault(); // éviter le reload
 
@@ -21,6 +22,28 @@ export default function Login({ onLogin }) {
       navigate("/"); // rediriger vers la page d'accueil/dashboard
     } else {
       alert("Veuillez entrer vos identifiants.");
+=======
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // prevent page reload
+    if (!username || !password) return alert("Veuillez entrer vos identifiants.");
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: username, password })
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        return alert(err.message || 'Échec de la connexion');
+      }
+      const data = await res.json();
+      localStorage.setItem('token', data.token);
+      onLogin();
+      navigate('/');
+    } catch (err) {
+      console.error(err);
+      alert('Erreur réseau lors de la connexion');
+>>>>>>> b5160007537f6b502fdbf07e4b39476c72bc53cd:src/components/Login.jsx
     }
   };
 
