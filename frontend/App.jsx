@@ -35,11 +35,16 @@ import HelpdeskChat from "./components/HelpdeskChat";
 import ContactHelpdesk from "./components/ContactHelpdesk";
 import AgentDashboard from "./components/AgentDashboard";
 import Login from "./components/Login";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { NavLink } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  NavLink,
+} from "react-router-dom";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("token"));
+  const role = localStorage.getItem("role"); // 🔑 récupération du rôle
 
   const handleLogin = () => {
     setIsLoggedIn(true);
@@ -47,6 +52,7 @@ function App() {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("role"); // 🔑 on enlève aussi le rôle à la déconnexion
     setIsLoggedIn(false);
   };
 
@@ -81,38 +87,71 @@ function App() {
             <NavLink to="/" style={navLinkStyle} end activeStyle={activeStyle}>
               Dashboard
             </NavLink>
-            <NavLink
-              to="/ticket-followup"
-              style={navLinkStyle}
-              activeStyle={activeStyle}
-            >
-              Suivi ticket
-            </NavLink>
-            <NavLink
-              to="/contact"
-              style={navLinkStyle}
-              activeStyle={activeStyle}
-            >
-              Contact
-            </NavLink>
-            <NavLink
-              to="/agent-dashboard"
-              style={navLinkStyle}
-              activeStyle={activeStyle}
-            >
-              Dashboard Agent
-            </NavLink>
+
+            {/* 🔑 Différentes options selon le rôle */}
+            {role === "admin" && (
+              <>
+                <NavLink
+                  to="/agent-dashboard"
+                  style={navLinkStyle}
+                  activeStyle={activeStyle}
+                >
+                  Dashboard Agent
+                </NavLink>
+                <NavLink
+                  to="/ticket-followup"
+                  style={navLinkStyle}
+                  activeStyle={activeStyle}
+                >
+                  Suivi ticket
+                </NavLink>
+              </>
+            )}
+
+            {role === "technicien" && (
+              <NavLink
+                to="/ticket-followup"
+                style={navLinkStyle}
+                activeStyle={activeStyle}
+              >
+                Suivi ticket
+              </NavLink>
+            )}
+
+            {role === "client" && (
+              <NavLink
+                to="/contact"
+                style={navLinkStyle}
+                activeStyle={activeStyle}
+              >
+                Contact
+              </NavLink>
+            )}
+
             <button onClick={handleLogout}>Déconnexion</button>
           </header>
 
+          {/* Chat visible pour tous */}
           <HelpdeskChat />
 
           <main style={{ padding: "2rem" }}>
             <Routes>
               <Route path="/" element={<Dashboard />} />
-              <Route path="/ticket-followup" element={<TicketFollowUp />} />
-              <Route path="/contact" element={<ContactHelpdesk />} />
-              <Route path="/agent-dashboard" element={<AgentDashboard />} />
+
+              {role === "admin" && (
+                <>
+                  <Route path="/ticket-followup" element={<TicketFollowUp />} />
+                  <Route path="/agent-dashboard" element={<AgentDashboard />} />
+                </>
+              )}
+
+              {role === "technicien" && (
+                <Route path="/ticket-followup" element={<TicketFollowUp />} />
+              )}
+
+              {role === "client" && (
+                <Route path="/contact" element={<ContactHelpdesk />} />
+              )}
             </Routes>
           </main>
         </>

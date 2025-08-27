@@ -6,14 +6,19 @@ export default function Login({ onLogin }) {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [role, setRole] = useState("client"); // rôle par défaut
 
   const handleSubmit = (e) => {
-    e.preventDefault(); // prevent page reload
+    e.preventDefault(); // éviter le reload
 
     if (username && password) {
-      localStorage.setItem("token", "fakeToken123"); // store a fake token
-      onLogin(); // update App state
-      navigate("/"); // redirect to Dashboard
+      // simulation : sauvegarder les infos de connexion
+      localStorage.setItem("token", "fakeToken123");
+      localStorage.setItem("role", role); // sauvegarde du rôle choisi
+      localStorage.setItem("username", username);
+
+      onLogin(); // mettre à jour l'état global
+      navigate("/"); // rediriger vers la page d'accueil/dashboard
     } else {
       alert("Veuillez entrer vos identifiants.");
     }
@@ -31,6 +36,7 @@ export default function Login({ onLogin }) {
           onChange={(e) => setUsername(e.target.value)}
           required
         />
+
         <input
           type="password"
           placeholder="Mot de passe"
@@ -38,6 +44,13 @@ export default function Login({ onLogin }) {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
+
+        {/* Champ rôle */}
+        <select value={role} onChange={(e) => setRole(e.target.value)}>
+          <option value="client">Client</option>
+          <option value="technicien">Technicien</option>
+          <option value="admin">Admin</option>
+        </select>
 
         <button type="submit">Se connecter</button>
 
