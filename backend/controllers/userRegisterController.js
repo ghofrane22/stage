@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs');
-const User = require('../models/User');
+const User = require('../../models/User');
 
 exports.register = async (req, res) => {
   const { email, name, password } = req.body || {};
